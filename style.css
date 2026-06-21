@@ -1,0 +1,1287 @@
+/* ==========================================================================
+   1. CORE ARCHITECTURE & VARIABLES 
+   ========================================================================== */
+:root {
+    --bg-primary: #0B0B0B;
+    --bg-secondary: #121212;
+    --bg-darker: #070707;
+    --text-pure: #FFFFFF;
+    --text-muted: #A0A0A0;
+    --accent-gold: #C8A96A;
+    --accent-gold-hover: #E5C788;
+    --glass-bg: rgba(18, 18, 18, 0.75);
+    --glass-border: rgba(200, 169, 106, 0.2);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-sans: 'Montserrat', sans-serif;
+    --transition-smooth: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: none; /* Enforce custom premium cursor */
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: var(--bg-primary);
+    color: var(--text-pure);
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. REUSABLE UTILITIES & LUXURY UTILS
+   ========================================================================== */
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.section-padding {
+    padding: 120px 0;
+}
+
+.bg-darker {
+    background-color: var(--bg-darker);
+}
+
+.text-center { text-align: center; }
+
+h1, h2, h3, h4, .nav-brand {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.gold-divider {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 20px auto;
+}
+
+.gold-divider.left-aligned {
+    margin: 20px 0;
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+}
+
+.accent-text {
+    color: var(--accent-gold);
+    font-style: italic;
+}
+
+/* Luxury Buttons */
+.btn {
+    display: inline-block;
+    padding: 14px 36px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    border: 1px solid transparent;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-primary {
+    background-color: var(--accent-gold);
+    color: var(--bg-primary);
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 20px rgba(200, 169, 106, 0.3);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-pure);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    color: #fff;
+    border: none;
+}
+
+.btn-whatsapp:hover {
+    background-color: #20ba5a;
+}
+
+.w-100 { width: 100%; }
+
+/* Custom Cursor Elements */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.cursor-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+}
+
+.cursor-circle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease-out, width 0.3s, height 0.3s, background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scissors-icon {
+    width: 0px;
+    height: 0px;
+    fill: var(--bg-primary);
+    transition: width 0.3s, height 0.3s;
+}
+
+/* Custom Cursor Hover Interaction State */
+.custom-cursor.hovered .cursor-circle {
+    width: 50px;
+    height: 50px;
+    background-color: var(--accent-gold);
+}
+
+.custom-cursor.hovered .scissors-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* ==========================================================================
+   3. STICKY GLASSMORPHISM NAVBAR
+   ========================================================================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: var(--transition-smooth);
+    padding: 25px 0;
+    background-color: transparent;
+}
+
+.navbar.scrolled {
+    padding: 15px 0;
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+
+.nav-brand {
+    font-size: 1.8rem;
+    color: var(--text-pure);
+    text-decoration: none;
+    letter-spacing: 4px;
+}
+
+.nav-brand span {
+    color: var(--accent-gold);
+    font-weight: 300;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.nav-link {
+    color: var(--text-pure);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 10px 20px;
+    transition: var(--transition-smooth);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--accent-gold);
+}
+
+.nav-btn {
+    margin-left: 20px;
+    padding: 10px 24px;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: var(--transition-smooth);
+    background: transparent;
+}
+
+.nav-btn:hover {
+    background-color: var(--accent-gold);
+    color: var(--bg-primary);
+    box-shadow: 0 0 15px rgba(200, 169, 106, 0.4);
+}
+
+.menu-toggle {
+    display: none;
+}
+
+/* ==========================================================================
+   4. FULL SCREEN HERO ENGINE
+   ========================================================================== */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+}
+
+.hero-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    line-height: 1.2;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    color: var(--text-muted);
+}
+
+.hero-btns .btn {
+    margin: 0 10px;
+}
+
+/* Scroll Down Mouse Vector Animation */
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.7;
+}
+
+.scroll-indicator span {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+.mouse {
+    width: 24px;
+    height: 40px;
+    border: 2px solid var(--text-pure);
+    border-radius: 12px;
+    position: relative;
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background-color: var(--accent-gold);
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scrollMouse 1.5s infinite;
+}
+
+@keyframes scrollMouse {
+    0% { top: 6px; opacity: 1; }
+    100% { top: 18px; opacity: 0; }
+}
+
+/* ==========================================================================
+   5. PREMIUM SERVICES DESIGN SUITE
+   ========================================================================== */
+.section-header h2 {
+    font-size: 3rem;
+    text-transform: uppercase;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 1px;
+    max-width: 600px;
+    margin: 0 auto 60px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.service-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 40px 30px;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--accent-gold);
+    opacity: 0;
+    transition: var(--transition-smooth);
+    transform: scale(1.05);
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    background-color: var(--bg-darker);
+}
+
+.service-card:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.service-icon {
+    margin-bottom: 25px;
+    transition: transform 0.5s ease;
+}
+
+.service-card:hover .service-icon {
+    transform: rotateY(180deg);
+}
+
+.service-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.service-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+.btn-text {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.btn-text &:hover span {
+    transform: translateX(5px);
+}
+
+/* ==========================================================================
+   6. ABOUT SECTION WITH ANIMATED COUNTERS
+   ========================================================================== */
+.about-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-img {
+    position: relative;
+}
+
+.about-img img {
+    width: 100%;
+    height: auto;
+    border: 1px solid rgba(200, 169, 106, 0.2);
+}
+
+.experience-badge {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--accent-gold);
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.experience-badge span, .counter-item span {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--accent-gold);
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+}
+
+.experience-badge p {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+.about-text .lead {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--accent-gold);
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.about-text p {
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+
+.counters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.counter-item {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-left: 3px solid var(--accent-gold);
+}
+
+.counter-item p {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* ==========================================================================
+   7. BEFORE & AFTER TRANSFORMATION ENGINE
+   ========================================================================== */
+.comparison-slider-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.comparison-slider {
+    position: relative;
+    width: 100%;
+    height: 550px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+}
+
+.comparison-slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.image-after-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image-after-wrapper img {
+    width: 900px; /* Synchronized locked width mapping wrapper dimensions */
+    max-width: none;
+}
+
+.slider-handle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background-color: var(--accent-gold);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.handle-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-gold);
+    font-size: 0.7rem;
+    gap: 4px;
+}
+
+.real-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: ew-resize;
+    z-index: 6;
+}
+
+/* ==========================================================================
+   8. SERVICE TIERS & PRICING
+   ========================================================================== */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+.pricing-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    padding: 50px 40px;
+    text-align: center;
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.pricing-card.featured {
+    border: 1px solid var(--accent-gold);
+    transform: scale(1.03);
+    background-color: var(--bg-primary);
+}
+
+.popular-tag {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-gold);
+    color: var(--bg-primary);
+    padding: 4px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pricing-card .tier {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.pricing-card .price {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+    margin-bottom: 35px;
+}
+
+.pricing-card .price span {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.pricing-card .features {
+    list-style: none;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.pricing-card .features li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+.pricing-card .features li::before {
+    content: "✓ ";
+    color: var(--accent-gold);
+    margin-right: 8px;
+}
+
+.pricing-card:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* ==========================================================================
+   9. VISUAL GALLERY MASONRY DESIGN
+   ========================================================================== */
+.gallery-filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-pure);
+    padding: 10px 25px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition-smooth);
+}
+
+.filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    height: 350px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 7, 7, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition-smooth);
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--accent-gold);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-overlay h4 {
+    font-size: 1.6rem;
+    color: var(--accent-gold);
+    transform: translateY(20px);
+    transition: var(--transition-smooth);
+}
+
+.gallery-item:hover .gallery-overlay h4 {
+    transform: translateY(0);
+}
+
+/* Lightbox Subsystem */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(7, 7, 7, 0.95);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-content {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    border: 1px solid var(--accent-gold);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    font-size: 3rem;
+    color: var(--text-pure);
+    transition: var(--transition-smooth);
+}
+
+.lightbox-close:hover {
+    color: var(--accent-gold);
+}
+
+/* ==========================================================================
+   10. TEAM SUITE ARCHITECTURE
+   ========================================================================== */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.team-member {
+    background-color: var(--bg-primary);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+    position: relative;
+}
+
+.member-img {
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.member-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.team-member:hover .member-img img {
+    transform: scale(1.05);
+}
+
+.member-info {
+    padding: 30px;
+    text-align: center;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid rgba(200, 169, 106, 0.1);
+}
+
+.member-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.member-info .designation {
+    color: var(--accent-gold);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.member-info .experience {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.member-socials {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.member-socials a {
+    color: var(--text-pure);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    transition: var(--transition-smooth);
+}
+
+.member-socials a:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+/* ==========================================================================
+   11. LUXURY SLIDER TESTIMONIALS
+   ========================================================================== */
+.testimonial-slider-container {
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.testimonial-slider {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.testimonial-card {
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 40px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.client-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.client-meta img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--accent-gold);
+}
+
+.client-meta h4 {
+    font-size: 1.4rem;
+}
+
+.rating {
+    color: var(--accent-gold);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+.review-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+}
+
+.dot.active {
+    background-color: var(--accent-gold);
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   12. INSTAGRAM DISCOVERY FEED
+   ========================================================================== */
+.insta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.insta-item {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.insta-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-smooth);
+}
+
+.insta-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(7,7,7,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.insta-item:hover img {
+    transform: scale(1.05);
+}
+
+.insta-item:hover .insta-overlay {
+    opacity: 1;
+}
+
+.insta-handle {
+    color: var(--accent-gold);
+    text-decoration: none;
+}
+
+.current-action {
+    margin-top: 40px;
+}
+
+/* ==========================================================================
+   13. SANCTUARY APPOINTMENT MODAL ELEGANCE
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+
+.modal-overlay.open {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-box {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--accent-gold);
+    max-width: 550px;
+    width: 90%;
+    padding: 50px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 2rem;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.modal-box h3 {
+    font-size: 2.2rem;
+    text-align: center;
+}
+
+/* Luxury Input Framework styling */
+.luxury-form .form-group {
+    margin-bottom: 20px;
+}
+
+.luxury-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.luxury-form input, 
+.luxury-form select, 
+.luxury-form textarea {
+    width: 100%;
+    background-color: var(--bg-primary);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 20px;
+    color: var(--text-pure);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    transition: var(--transition-smooth);
+    border-radius: 0;
+    outline: none;
+}
+
+.luxury-form input:focus, 
+.luxury-form select:focus, 
+.luxury-form textarea:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 10px rgba(200, 169, 106, 0.2);
+}
+
+.luxury-form option {
+    background-color: var(--bg-secondary);
+    color: var(--text-pure);
+}
+
+.luxury-form .btn {
+    margin-top: 10px;
+}
+
+/* ==========================================================================
+   14. CONTACT SANCTUARY MANAGEMENT
+   ========================================================================== */
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.contact-info .info-block {
+    margin-bottom: 35px;
+}
+
+.contact-info h3 {
+    font-size: 1.6rem;
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+}
+
+.contact-info p {
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+.map-container {
+    margin-top: 30px;
+    border: 1px solid var(--glass-border);
+}
+
+/* ==========================================================================
+   15. FIXED UTILITY FLOATING MANAGEMENT
+   ========================================================================== */
+.floating-actions {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 999;
+}
+
+.float-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.float-btn.whatsapp {
+    background-color: #25D366;
+    border: none;
+}
+
+.float-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+}
+
+/* ==========================================================================
+   16. FOOTER METRICS
+   ========================================================================== */
+.footer {
+    background-color: var(--bg-darker);
+    border-top: 1px solid rgba(255,255,255,0.02);
+    padding: 80px 0 30px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.footer-brand-col p {
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    max-width: 300px;
+}
+
+.footer h4 {
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer ul {
+    list-style: none;
+}
+
+.footer ul li {
+    margin-bottom: 12px;
+}
+
+.footer ul li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: var(--transition-smooth);
+    font-weight: 300;
+}
+
+.footer ul li a:hover {
+    color: var(--accent-gold);
+    padding-left: 5px;
+}
+
+.subscribe-form {
+    display: flex;
+    margin-top: 20px;
+}
+
+.subscribe-form input {
+    background-color: var(--bg-primary);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 12px 15px;
+    color: var(--text-pure);
+    outline: none;
+    font-size: 0.85rem;
+}
+
+.subscribe-form button {
+    background-color: var(--accent-gold);
+    border: none;
+    padding: 0 25px;
+    color: var(--bg-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 30px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 300;
+}
